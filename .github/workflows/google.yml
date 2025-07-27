@@ -102,6 +102,7 @@ jobs:
       # Set up kustomize
       - name: Install gke-gcloud-auth-plugin
         run: |
+          apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
           gcloud container clusters get-credentials  '${{ env.GKE_CLUSTER }}' --region '${{ env.GKE_ZONE }}'
           sed -i "s/GOOGLE_PROJECT/$PROJECT_ID/g" resources.yaml
           kubectl apply -f resources.yaml
