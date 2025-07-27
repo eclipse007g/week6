@@ -98,7 +98,7 @@ jobs:
             --build-arg GITHUB_REF="${GITHUB_REF}" \
       
 
-          #docker push "${DOCKER_TAG}"
+          docker push "${DOCKER_TAG}"
 
       # Set up GKE
       - name: GKE
