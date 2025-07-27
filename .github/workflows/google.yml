@@ -58,7 +58,7 @@ jobs:
 
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@4 # actions/checkout@v4
+        uses: actions/checkout@v3 # actions/checkout@v4
 
       # Configure Workload Identity Federation and generate an access token.
       #
