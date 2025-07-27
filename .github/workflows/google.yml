@@ -1,3 +1,4 @@
+
 # This workflow will build a docker container, publish it to Google Container
 # Registry, and deploy it to GKE when there is a push to the "main"
 # branch.
@@ -69,8 +70,6 @@ jobs:
         uses: 'google-github-actions/auth@v2' # google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
-          install_components: gke-gcloud-auth-plugin
-
 
       # Authenticate Docker to Google Cloud Artifact Registry
       - name: 'Docker Auth'
@@ -95,19 +94,15 @@ jobs:
           docker build \
             --tag "${DOCKER_TAG}" \
             --build-arg GITHUB_SHA="${GITHUB_SHA}" \
-            --build-arg GITHUB_REF="${GITHUB_REF}" \ 
+            --build-arg GITHUB_REF="${GITHUB_REF}" \
             .
-      
 
           docker push "${DOCKER_TAG}"
 
-      # Set up GKE
-      - name: GKE
-        run: |-
-            gcloud container clusters get-credentials '${{ env.GKE_CLUSTER }}'\
-            --zone '${{ env.GKE_ZONE }}' \
-            --project '${{ env.PROJECT_ID }}'
-            sed -i "s/GOOGLE_PROJECT/${PROJECT_ID}/g" resources.yaml
-            kubectl apply -f resources.yaml
-            kubectl pods
-
+      # Set up kustomize
+      - name: Install gke-gcloud-auth-plugin
+        run: |
+          gcloud container clusters get-credentials  '${{ env.GKE_CLUSTER }}' --region '${{ env.GKE_ZONE }}'
+          sed -i "s/GOOGLE_PROJECT/$PROJECT_ID/g" resources.yaml
+          kubectl apply -f resources.yaml
+            
