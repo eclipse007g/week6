@@ -69,7 +69,7 @@ jobs:
         uses: 'google-github-actions/auth@v2' # google-github-actions/auth@v2
         with:
           workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
-          service_account: 'gke-deployer@${PROJECT_ID}.iam.gserviceaccount.com'
+          service_account: 'gke-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com'
 
       # Authenticate Docker to Google Cloud Artifact Registry
       - name: 'Docker Auth'
