@@ -69,6 +69,8 @@ jobs:
         uses: 'google-github-actions/auth@v2' # google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+          install_components: gke-gcloud-auth-plugin
+
 
       # Authenticate Docker to Google Cloud Artifact Registry
       - name: 'Docker Auth'
@@ -94,13 +96,17 @@ jobs:
             --tag "${DOCKER_TAG}" \
             --build-arg GITHUB_SHA="${GITHUB_SHA}" \
             --build-arg GITHUB_REF="${GITHUB_REF}" \
-            .
+      
 
-          docker push "${DOCKER_TAG}"
+          #docker push "${DOCKER_TAG}"
 
-      # Set up kustomize
-      - name: Install gke-gcloud-auth-plugin
+      # Set up GKE
+      - name: GKE
         run: |-
-            sudo apt-get install google-cloud-cli-gke-gcloud-auth-plugin
-
+            gcloud container clusters get-credentials '${{ env.GKE_CLUSTER }}'\
+            --zone '${{ env.GKE_ZONE }}' \
+            --project '${{ env.PROJECT_ID }}'
+            sed -i "s/GOOGLE_PROJECT/${PROJECT_ID}/g" resources.yaml
+            kubectl apply -f resources.yaml
+            kubectl pods
 
